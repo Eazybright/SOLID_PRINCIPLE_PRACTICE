@@ -14,3 +14,5 @@
 Route::get('/', function () {
     return view('welcome');
 });
+
+Route::post('order/{product_id}/process', ProcessOrdersController::class);
