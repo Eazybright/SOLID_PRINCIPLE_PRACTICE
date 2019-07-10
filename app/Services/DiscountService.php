@@ -3,6 +3,8 @@
 namespace App\Services;
 
 
+use App\Patterns\Discounts\Discountable;
+
 /**
  * Class DiscountService
  *
@@ -13,6 +15,14 @@ class DiscountService
 
     /** @var */
     protected $product;
+
+    /** @var Discountable */
+    protected $discountable;
+
+    public function __construct(Discountable $discountable)
+    {
+        $this->discountable = $discountable;
+    }
 
     /**
      * @param $product
@@ -26,11 +36,10 @@ class DiscountService
     }
 
     /**
-     * @return string
+     * @return mixed
      */
-    public function applySpecialDiscount()
+    public function apply()
     {
-        $discount = 0.20 * $this->product->price;
-        return number_format($this->product->price - $discount,2);
+        return $this->discountable->apply($this->product);
     }
 }
