@@ -43,8 +43,8 @@ class OrderProcessingService
 
         $this->stockRepository->checkAvailibility($stock);
 
-        $discountService = new DiscountService(new TwentyPercentDiscount);
-        $total = $discountService->with($product)->apply();
+//        $discountService = new DiscountService(new TwentyPercentDiscount);
+        $total = DiscountService::make(new TwentyPercentDiscount)->with($product)->apply();
 
         $paymentSuccessMessage = $this->stripePaymentService->process($total);
 

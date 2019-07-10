@@ -24,6 +24,11 @@ class DiscountService
         $this->discountable = $discountable;
     }
 
+    public static function make(Discountable $discountable)
+    {
+        return new static($discountable);
+    }
+
     /**
      * @param $product
      * @return $this
