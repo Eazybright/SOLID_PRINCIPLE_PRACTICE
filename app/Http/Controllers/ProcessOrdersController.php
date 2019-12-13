@@ -25,6 +25,8 @@ class ProcessOrdersController extends Controller
      */
     public function __invoke($product_id, Request $request)
     {
-        return $this->orderProcessingService->execute($product_id, $request);
+        // return $request->all();
+        $response = $this->orderProcessingService->execute($product_id, $request);
+        return response($response);
     }
 }

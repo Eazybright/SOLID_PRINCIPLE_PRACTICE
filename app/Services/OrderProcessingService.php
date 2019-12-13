@@ -2,7 +2,6 @@
 
 namespace App\Services;
 
-
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -32,7 +31,7 @@ class OrderProcessingService
         if ($request->has('payment_method') && $request->input('payment_method') === 'stripe') {
             $paymentSuccessMessage = $this->processPaymentViaStripe('stripe', $total);
         }
-
+        // return $paymentSuccessMessage;
         // payment succeeded
         if (!empty($paymentSuccessMessage)) {
             
