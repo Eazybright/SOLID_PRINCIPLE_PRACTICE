@@ -5,12 +5,14 @@ namespace Tests\Feature;
 use Tests\TestCase;
 use App\Models\Stock;
 use App\Models\Product;
+use PHPUnit\Framework\expectException;
 use Illuminate\Foundation\Testing\WithFaker;
+use Illuminate\Validation\ValidationException;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class OrderProcessTest extends TestCase
 {
-    use RefreshDatabase;
+    // use RefreshDatabase;
     /**
      * Proceess user orders.
      *
@@ -25,10 +27,36 @@ class OrderProcessTest extends TestCase
             'product_id' => $product->id
         ]);
 
-        $response = $this->post('order/{$product->id}/process', [
+        $response = $this->post("order/{$product->id}/process", [
             'payment_method' => 'stripe'
         ])->assertOk()->json();
 
-        // echo $response;
+        //test response message for correctness
+        $this->assertArrayHasKey('payment_message', $response);
+        $this->assertArrayHasKey('discounted_price', $response);
+        $this->assertArrayHasKey('original_price', $response);
+        $this->assertArrayHasKey('message', $response);
+
+        //test stock database data
+        $this->assertDatabaseHas('stocks', [
+            'quantity' => $stock->quantity = 30
+        ]);
+    }
+
+    public function an_error_is_thrown_when_product_is_out_of_stock(): void
+    {
+        $this->expectException(ValidationException::class);
+
+        //create product and stock
+        $product = factory(Product::class)->create();
+
+        $stock = factory(Stock::class)->create([
+            'quantity' => 0,
+            'product_id' => $product->id
+        ]);
+
+        $response = $this->withoutExceptionHandling()->post("order/{$product->id}/process", [
+            'payment_method' => 'stripe'
+        ]);
     }
 }

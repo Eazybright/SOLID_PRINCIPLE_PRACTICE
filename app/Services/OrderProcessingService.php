@@ -4,7 +4,8 @@ namespace App\Services;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Illuminate\Validation\ValidationException;
+// use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class OrderProcessingService
 {
@@ -18,7 +19,10 @@ class OrderProcessingService
 
         // check the stock level
         if ($stock->quantity < 1) {
-            throw new NotFoundHttpException('We are out of stock');
+            // throw new NotFoundHttpException('We are out of stock');
+            throw ValidationException::withMessage([
+                'message' => 'We are out of stock'
+            ]);
         }
 
         // Apply discount

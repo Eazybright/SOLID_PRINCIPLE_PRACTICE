@@ -17,7 +17,7 @@ class ProcessOrdersController extends Controller
     }
 
     /**
-     * Handle the incoming request.
+     * Handle the incoming request
      *
      * @param Product $product
      * @param \Illuminate\Http\Request $request
