@@ -4,5 +4,8 @@ Software Architecture: Learning how to create modular, maintainable and scalable
 
 ## Instructor
 
-Ali Shah
-Lead developer & Web Technologies Enthusiast
+Ali Shah, Lead developer & Web Technologies Enthusiast
+
+## Course Content
+
+https://www.udemy.com/course/solid-principles-decoded/
