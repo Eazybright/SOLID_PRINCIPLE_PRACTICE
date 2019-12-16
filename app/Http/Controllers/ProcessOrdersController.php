@@ -25,7 +25,11 @@ class ProcessOrdersController extends Controller
      */
     public function __invoke($product_id, Request $request)
     {
-        // return $request->all();
+        //check if payment method is selected
+        $this->validate($request, [
+            'payment_method' => 'required|string'
+        ]);
+
         $response = $this->orderProcessingService->execute($product_id, $request);
         return response($response);
     }
