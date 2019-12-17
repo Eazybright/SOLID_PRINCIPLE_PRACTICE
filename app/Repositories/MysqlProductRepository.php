@@ -4,8 +4,9 @@ namespace App\Repositories;
 
 
 use Illuminate\Support\Facades\DB;
+use App\Repositories\Contracts\ProductRepositoryInterface;
 
-class ProductRepository
+class MysqlProductRepository implements ProductRepositoryInterface
 {
     /**
      * @param $product_id

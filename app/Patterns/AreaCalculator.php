@@ -2,57 +2,55 @@
 
 namespace App\Patterns;
 
-
-interface Shapable
+interface Shapeable
 {
     public function area();
 }
 
-// square
-// width * height
-class Square implements Shapable
+//Square
+//width * height
+class Square implements Shapeable
 {
-    public $height;
     public $width;
+    public $height;
 
     public function __construct($height, $width)
     {
-        $this->height = $height;
         $this->width = $width;
+        $this->height = $height;
     }
 
     public function area()
     {
-        return $this->width * $this->height;
+        return "Given:\n height = ".$this->height."\n width = ".$this->width.
+                "\n Area of a sqaure = ".$this->height * $this->width / 2;
     }
 }
 
-// triangle
-// height * base/ 2
-
-class Triangle implements Shapable
+//area of a triangle 
+class Triangle implements Shapeable
 {
-    public $height;
     public $base;
+    public $height;
 
     public function __construct($height, $base)
     {
-        $this->height = $height;
         $this->base = $base;
+        $this->height = $height;
     }
 
     public function area()
     {
-        return $this->height * $this->base / 2;
+        return "Given:\n height = ".$this->height."\n base = ".
+                $this->base."\n Area of a triangle = ".$this->height * $this->base / 2;
     }
 }
 
-
-// circle   -- pi radius * 2
-
-class Circle implements Shapable
+//area of a circle
+class Circle implements Shapeable
 {
-    protected $radius;
+    public $radius;
+    const PI = 3.142;
 
     public function __construct($radius)
     {
@@ -61,16 +59,14 @@ class Circle implements Shapable
 
     public function area()
     {
-        return $this->radius * $this->radius * pi();
+        return "Given:\n radius = ".$this->radius."\n Area of a circle = ".self::PI * $this->radius ** 2;
     }
 }
 
-
 class AreaCalculator
 {
-    public function calculate(Shapable $shapable)
+    public function calculate(Shapeable $shape)
     {
-        return $shapable->area();
+        return $shape->area();
     }
-
 }
