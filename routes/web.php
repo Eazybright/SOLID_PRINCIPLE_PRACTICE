@@ -24,3 +24,6 @@ Route::get('area', function(\App\Patterns\AreaCalculator $areaCalculator) {
 
     return $areaCalculator->calculate($circle);
 });
+
+Route::post('order/{product_id}/process', ProcessOrdersController::class);
+
