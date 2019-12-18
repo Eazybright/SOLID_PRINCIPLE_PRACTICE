@@ -2,30 +2,29 @@
 
 namespace App\Services;
 
-use App\Repositories\Contracts\ProductRepositoryInterface;
-use App\Repositories\Contracts\StockRepositoryInterface;
 use Illuminate\Http\Request;
+use App\Services\DiscountService;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
+use App\Patterns\Discount\TwentyPercentDiscount;
+use App\Repositories\Contracts\StockRepositoryInterface;
+use App\Repositories\Contracts\ProductRepositoryInterface;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class OrderProcessingService
 {
     protected $productRepository;
     protected $stockRepository;
-    protected $discountService;
     protected $stripePaymentService;
 
     public function __construct(
         ProductRepositoryInterface $productRepository,
         StockRepositoryInterface $stockRepository,
-        DiscountService $discountService,
         StripePaymentService $stripePaymentService
     )
     {
         $this->productRepository = $productRepository;
         $this->stockRepository = $stockRepository;
-        $this->discountService = $discountService;
         $this->stripePaymentService = $stripePaymentService;
     }
 
@@ -37,7 +36,7 @@ class OrderProcessingService
 
         $this->stockRepository->checkAvailibility($stock);
 
-        $total = $this->discountService->with($product)->applySpecialDiscount();
+        $total = DiscountService::make(new TwentyPercentDiscount)->with($product)->apply();
 
         $paymentSuccessMessage = $this->stripePaymentService->process($total);
 
