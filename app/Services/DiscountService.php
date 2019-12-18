@@ -2,18 +2,40 @@
 
 namespace App\Services;
 
+use App\Patterns\Discount\Discountable;
+
+/**
+ * Class DiscountService
+ *
+ * @package App\Services
+ */
 class DiscountService
 {
     protected $product;
-    
-    public function with($product){
+    protected $discountable;
+
+    public function __construct(Discountable $discountable)
+    {
+        $this->discountable = $discountable;
+    }
+
+    public static function make(Discountable $discountable)
+    {
+        return new static($discountable);
+    }
+    /**
+     * @param $product
+     * @return $this
+     */
+    public function with($product)
+    {
         $this->product = $product;
+
         return $this;
     }
 
-    public function applySpecialDiscount()
+    public function apply()
     {
-        $discount = 0.20 * $this->product->price;
-        return number_format(($this->product->price - $discount),2);
+        return $this->discountable->apply($this->product);
     }
 }

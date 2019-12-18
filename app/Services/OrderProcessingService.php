@@ -3,56 +3,51 @@
 namespace App\Services;
 
 use Illuminate\Http\Request;
-use Illuminate\Validation\ValidationException;
-use App\Repositories\ProductRepository;
-use App\Repositories\StockRepository;
 use App\Services\DiscountService;
-use App\Services\StripePaymentService; 
+use Illuminate\Support\Facades\DB;
+use Illuminate\Validation\ValidationException;
+use App\Patterns\Discount\TwentyPercentDiscount;
+use App\Repositories\Contracts\StockRepositoryInterface;
+use App\Repositories\Contracts\ProductRepositoryInterface;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class OrderProcessingService
 {
-    protected $productRepo;
-    protected $stockRepo;
-    protected $discountService;
-    protected $stripeService;
-    
-    public function __construct(ProductRepository $productRepo, 
-                                StockRepository $stockRepo,
-                                DiscountService $discountService,
-                                StripePaymentService $stripeService)
+    protected $productRepository;
+    protected $stockRepository;
+    protected $stripePaymentService;
+
+    public function __construct(
+        ProductRepositoryInterface $productRepository,
+        StockRepositoryInterface $stockRepository,
+        StripePaymentService $stripePaymentService
+    )
     {
-        $this->productRepo = $productRepo;
-        $this->stockRepo = $stockRepo;
-        $this->discountService = $discountService;
-        $this->stripeService= $stripeService;
+        $this->productRepository = $productRepository;
+        $this->stockRepository = $stockRepository;
+        $this->stripePaymentService = $stripePaymentService;
     }
 
-    public function execute($product_id, Request $request)
+    public function execute($product_id)
     {
-        // Find the Product
-        $product = $this->productRepo->getById($product_id);
+        $product = $this->productRepository->getById($product_id);
 
-        // Get the stock level
-        $stock = $this->stockRepo->getStockByProduct($product_id); 
-        
-        //check stock availability
-        $this->stockRepo->checkStockAvailability($stock);
+        $stock = $this->stockRepository->forProduct($product_id);
 
-        // Apply discount
-        $total = $this->discountService->with($product)->applySpecialDiscount();
+        $this->stockRepository->checkAvailibility($stock);
 
-        // Attempt payment
-        $paymentSuccessMessage = $this->stripeService->processPaymentViaStripe($total);
+        $total = DiscountService::make(new TwentyPercentDiscount)->with($product)->apply();
 
-        // payment succeeded    
-        $this->stockRepo->recordData($product_id);
-        
+        $paymentSuccessMessage = $this->stripePaymentService->process($total);
+
+        $this->stockRepository->record($product_id);
+
         return [
             'payment_message' => $paymentSuccessMessage,
             'discounted_price' => $total,
-            'original_price'  => $product->price,
+            'original_price' => $product->price,
             'message' => 'Thank you, your order is being processed'
         ];
-    }
 
+    }
 }

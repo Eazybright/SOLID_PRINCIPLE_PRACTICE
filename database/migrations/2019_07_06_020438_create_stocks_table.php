@@ -18,6 +18,10 @@ class CreateStocksTable extends Migration
             $table->bigInteger('product_id')->index();
             $table->bigInteger('quantity');
             $table->timestamps();
+
+            $table->foreign('product_id')
+                ->references('id')
+                ->on('products');
         });
     }
 
