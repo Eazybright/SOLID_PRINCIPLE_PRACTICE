@@ -13,7 +13,7 @@
         <style>
             html, body {
                 background-color: #fff;
-                color: #636b6f;
+                color: #636b6f; 
                 font-family: 'Nunito', sans-serif;
                 font-weight: 200;
                 height: 100vh;
@@ -64,7 +64,7 @@
         </style>
     </head>
     <body>
-        <div class="flex-center position-ref full-height">
+        {{-- <div class="flex-center position-ref full-height">
             @if (Route::has('login'))
                 <div class="top-right links">
                     @auth
@@ -93,6 +93,25 @@
                     <a href="https://forge.laravel.com">Forge</a>
                     <a href="https://github.com/laravel/laravel">GitHub</a>
                 </div>
+            </div>
+        </div> --}}
+
+        <div class="container">
+            <div class="card-group my-5">
+                @foreach($products as $product)
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">{{$product->name}}</h5>
+                        </div>
+                        <div class="card-footer">
+                            <button class="btn btn-primary">Buy Now</button>
+                        </div>
+                    </div>    
+                    @if($loop->iteration % 3 === 0)
+                    </div>
+                    <div class="card-group my-5">
+                    @endif
+                @endforeach
             </div>
         </div>
     </body>

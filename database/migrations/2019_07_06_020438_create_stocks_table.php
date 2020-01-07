@@ -18,7 +18,8 @@ class CreateStocksTable extends Migration
             $table->bigInteger('product_id')->index();
             $table->bigInteger('quantity');
             $table->timestamps();
-
+        });
+        Schema::table('stocks', function($table){
             $table->foreign('product_id')
                 ->references('id')
                 ->on('products');

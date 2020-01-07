@@ -11,9 +11,8 @@
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
+Route::get('/', 'ProductsController@index');
+
 Route::post('order/{product_id}/process', ProcessOrdersController::class);
 
 Route::get('area', function(\App\Patterns\AreaCalculator $areaCalculator) {
