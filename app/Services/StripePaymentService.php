@@ -2,13 +2,14 @@
 
 namespace App\Services;
 
+use App\Interfaces\Payable;
 
 /**
  * Class StripePaymentService
  *
  * @package App\Services
  */
-class StripePaymentService
+class StripePaymentService implements Payable
 {
     /**
      * @param $total

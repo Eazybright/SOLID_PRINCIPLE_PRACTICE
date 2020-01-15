@@ -12,6 +12,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use App\Interfaces\Payable;
 
 class OrderProcessingService
 {
@@ -21,18 +22,18 @@ class OrderProcessingService
     protected $stockRepository;
     /** @var DiscountService */
     protected $discountService;
-    /** @var StripePaymentService */
-    protected $stripePaymentService;
+    /** @var Payable */
+    protected $Payable;
 
     public function __construct(
         ProductRepositoryInterface $productRepository,
         StockRepositoryInterface $stockRepository,
-        StripePaymentService $stripePaymentService
+        Payable $Payable
     )
     {
         $this->productRepository = $productRepository;
         $this->stockRepository = $stockRepository;
-        $this->stripePaymentService = $stripePaymentService;
+        $this->Payable = $Payable;
     }
 
     public function execute($product_id)
@@ -46,7 +47,7 @@ class OrderProcessingService
 //        $discountService = new DiscountService(new TwentyPercentDiscount);
         $total = DiscountService::make(new TwentyPercentDiscount)->with($product)->apply();
 
-        $paymentSuccessMessage = $this->stripePaymentService->process($total);
+        $paymentSuccessMessage = $this->Payable->process($total);
 
         $this->stockRepository->record($product_id);
 
